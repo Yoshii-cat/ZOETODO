@@ -1,0 +1,139 @@
+:root{
+  --ink:#1b1f3a;
+  --paper:#f7f3ea;
+  --paper-2:#efe9dc;
+  --lilac:#c9b8ff;
+  --lime:#d6f25a;
+  --coral:#ff7a59;
+  --muted:#7c7f94;
+  --radius:26px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{
+  background:var(--ink);
+  color:var(--paper);
+  font-family:ui-rounded,"SF Pro Rounded","Nunito","Avenir Next Rounded",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  padding:max(28px,env(safe-area-inset-top)) 40px 40px;
+  user-select:none;
+}
+header{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  margin-bottom:34px;
+}
+.date{font-size:20px;color:var(--lilac);font-weight:600;letter-spacing:.2px}
+h1{
+  margin:6px 0 0;font-size:64px;line-height:1;font-weight:800;letter-spacing:-1.5px;
+}
+h1 span{color:var(--lime)}
+.ring{
+  width:112px;height:112px;position:relative;flex:none;
+}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:10;stroke-linecap:round}
+.ring .track{stroke:rgba(255,255,255,.12)}
+.ring .fill{stroke:var(--lime);transition:stroke-dashoffset .5s cubic-bezier(.2,.8,.2,1)}
+.ring .num{
+  position:absolute;inset:0;display:grid;place-items:center;
+  font-size:30px;font-weight:800;
+}
+.ring .num small{font-size:13px;color:var(--muted);font-weight:600;margin-top:-6px}
+
+.grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:18px;
+}
+@media (max-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:600px){.grid{grid-template-columns:repeat(2,1fr)} body{padding:24px 20px} h1{font-size:44px}}
+
+.tile{
+  position:relative;
+  aspect-ratio:1/1;
+  border-radius:var(--radius);
+  background:var(--paper);
+  color:var(--ink);
+  padding:22px;
+  display:flex;flex-direction:column;justify-content:space-between;
+  cursor:pointer;
+  transition:transform .12s ease, background .25s ease, color .25s ease;
+  border:0;text-align:left;font:inherit;
+}
+.tile:active{transform:scale(.96)}
+.tile .name{font-size:24px;font-weight:800;line-height:1.1;letter-spacing:-.3px}
+.tile .sub{font-size:14px;font-weight:600;color:var(--muted);overflow-wrap:anywhere}
+.tile .mark{
+  width:44px;height:44px;border-radius:50%;
+  border:3px solid var(--ink);opacity:.35;
+  display:grid;place-items:center;
+  transition:all .25s ease;
+}
+.tile .mark svg{width:24px;height:24px;stroke:var(--ink);stroke-width:3.5;fill:none;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:30;stroke-dashoffset:30;transition:stroke-dashoffset .3s .1s ease}
+.tile.done{background:var(--lime)}
+.tile.done .mark{background:var(--ink);opacity:1}
+.tile.done .mark svg{stroke:var(--lime);stroke-dashoffset:0}
+.tile.done .sub{color:var(--ink);opacity:.7}
+.tile.skipped{background:var(--paper-2);color:var(--muted)}
+.tile.skipped .name{text-decoration:line-through;text-decoration-thickness:3px;text-decoration-color:var(--coral)}
+.tile.skipped .mark{border-style:dashed;opacity:.5}
+.tile.skipped .sub{color:var(--coral)}
+.tile.busy{opacity:.55;pointer-events:none}
+.skip{
+  position:absolute;top:16px;right:18px;
+  font-size:13px;font-weight:700;color:var(--muted);
+  background:transparent;border:0;padding:6px 8px;border-radius:10px;font:inherit;font-size:13px;font-weight:700;
+  cursor:pointer;
+}
+.skip:active{background:rgba(0,0,0,.06)}
+.tile.done .skip, .tile.skipped .skip{display:none}
+
+footer{margin-top:30px;font-size:14px;color:var(--muted);font-weight:600;display:flex;justify-content:space-between;gap:16px}
+
+/* sheets */
+.veil{
+  position:fixed;inset:0;background:rgba(27,31,58,.72);backdrop-filter:blur(10px);
+  display:none;align-items:center;justify-content:center;padding:24px;z-index:9;
+}
+.veil.open{display:flex}
+.sheet{
+  width:min(560px,100%);background:var(--paper);color:var(--ink);
+  border-radius:34px;padding:36px 36px 30px;
+  animation:pop .28s cubic-bezier(.2,.9,.2,1.2);
+}
+@keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.sheet h2{margin:0 0 6px;font-size:34px;font-weight:800;letter-spacing:-.6px}
+.sheet p{margin:0 0 26px;font-size:18px;color:var(--muted);font-weight:600}
+textarea{
+  width:100%;min-height:110px;border-radius:18px;border:3px solid var(--paper-2);
+  background:#fff;padding:16px;font:inherit;font-size:20px;font-weight:600;color:var(--ink);
+  resize:none;outline:none;
+}
+textarea:focus{border-color:var(--lilac)}
+.row{display:flex;gap:12px;margin-top:18px}
+.btn{
+  flex:1;border:0;border-radius:18px;padding:18px;font:inherit;font-size:19px;font-weight:800;cursor:pointer;
+}
+.btn.primary{background:var(--ink);color:var(--lime)}
+.btn.primary:disabled{background:var(--paper-2);color:var(--muted);cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--muted)}
+.btn.danger{background:var(--coral);color:#fff}
+.toast{
+  position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);
+  background:var(--lime);color:var(--ink);padding:14px 22px;border-radius:99px;
+  font-weight:800;font-size:17px;opacity:0;transition:all .3s;pointer-events:none;z-index:20;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.bad{background:var(--coral);color:#fff}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* Landscape iPad: keep the header from eating the grid. */
+@media (max-height:900px) and (orientation:landscape){
+  h1{font-size:44px}
+  header{margin-bottom:22px}
+  .ring{width:88px;height:88px}
+}
+
+.empty{
+  border:3px dashed rgba(247,243,234,.2);border-radius:var(--radius);
+  padding:40px;text-align:center;color:var(--muted);font-weight:700;font-size:18px;
+}

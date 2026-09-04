@@ -1,0 +1,139 @@
+/* Parent dashboard. Same ink / paper / lime / coral language as the iPad page,
+   laid out for a laptop or phone browser instead of a wall of tiles. */
+
+.p-wrap{max-width:1180px;margin:0 auto;padding-bottom:60px}
+
+.p-head{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  gap:20px;flex-wrap:wrap;margin-bottom:34px;
+}
+.p-head h1{font-size:46px}
+.p-head .date{font-size:16px}
+.p-actions{display:flex;gap:10px;align-items:center}
+.linkbtn{
+  background:transparent;border:2px solid rgba(247,243,234,.25);color:var(--paper);
+  border-radius:14px;padding:10px 16px;font:inherit;font-size:15px;font-weight:700;
+  cursor:pointer;text-decoration:none;display:inline-block;
+}
+.linkbtn:hover{border-color:var(--lilac);color:var(--lilac)}
+
+.card{
+  background:var(--paper);color:var(--ink);border-radius:var(--radius);
+  padding:26px 26px 22px;margin-bottom:22px;
+}
+.card > h2{
+  margin:0 0 4px;font-size:26px;font-weight:800;letter-spacing:-.4px;
+}
+.card > .hint{margin:0 0 20px;font-size:14px;font-weight:600;color:var(--muted)}
+
+/* week grid */
+.weekscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.week{border-collapse:separate;border-spacing:6px;width:100%;min-width:560px}
+table.week th{
+  font-size:13px;font-weight:800;color:var(--muted);text-align:center;
+  text-transform:uppercase;letter-spacing:.6px;padding-bottom:2px;
+}
+table.week th.rowhead{text-align:left;text-transform:none;letter-spacing:0;font-size:15px;color:var(--ink)}
+table.week td{padding:0}
+table.week th.today{color:var(--ink)}
+.cell{
+  height:46px;border-radius:14px;background:var(--paper-2);
+  display:grid;place-items:center;font-size:17px;font-weight:800;color:var(--muted);
+}
+.cell.done{background:var(--lime);color:var(--ink)}
+.cell.skipped{background:var(--coral);color:#fff}
+.cell.future{background:transparent;box-shadow:inset 0 0 0 2px var(--paper-2)}
+.legend{display:flex;gap:18px;margin-top:16px;font-size:13px;font-weight:700;color:var(--muted);flex-wrap:wrap}
+.legend i{width:14px;height:14px;border-radius:5px;display:inline-block;margin-right:7px;vertical-align:-2px}
+
+/* streaks */
+.streaks{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+.streak{
+  background:var(--paper-2);border-radius:18px;padding:16px 18px;
+}
+.streak .n{font-size:34px;font-weight:800;line-height:1}
+.streak .n.hot{color:var(--coral)}
+.streak .t{font-size:15px;font-weight:700;margin-top:4px}
+.streak .u{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+
+/* charts */
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media (max-width:820px){.charts{grid-template-columns:1fr}}
+.chartbox{background:var(--ink);color:var(--paper);border-radius:20px;padding:20px 16px 14px}
+.chartbox h3{margin:0 0 2px;padding-left:6px;font-size:18px;font-weight:800}
+.chartbox p{margin:0 0 12px;padding-left:6px;font-size:13px;font-weight:600;color:var(--muted)}
+
+/* log */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.chip{
+  border:0;border-radius:99px;padding:9px 16px;font:inherit;font-size:14px;font-weight:800;
+  background:var(--paper-2);color:var(--muted);cursor:pointer;
+}
+.chip.on{background:var(--ink);color:var(--lime)}
+.log{max-height:520px;overflow-y:auto;padding-right:6px}
+.entry{
+  display:flex;gap:14px;padding:14px 0;border-bottom:2px solid var(--paper-2);
+}
+.entry:last-child{border-bottom:0}
+.entry .dot{width:12px;height:12px;border-radius:50%;flex:none;margin-top:6px;background:var(--lime)}
+.entry.skipped .dot{background:var(--coral)}
+.entry .meta{font-size:13px;font-weight:700;color:var(--muted)}
+.entry .what{font-size:17px;font-weight:800;margin-top:1px}
+.entry .words{font-size:16px;font-weight:600;margin-top:4px;line-height:1.4;overflow-wrap:anywhere}
+.entry.skipped .words{color:var(--coral)}
+
+/* task manager */
+.tm{display:flex;flex-direction:column;gap:10px}
+.tmrow{
+  display:flex;align-items:center;gap:10px;background:var(--paper-2);
+  border-radius:16px;padding:10px 12px;flex-wrap:wrap;
+}
+.tmrow.off{opacity:.55}
+.tmrow input{
+  border:2px solid transparent;border-radius:11px;background:#fff;padding:10px 12px;
+  font:inherit;font-size:16px;font-weight:700;color:var(--ink);outline:none;min-width:0;
+}
+.tmrow input:focus{border-color:var(--lilac)}
+.tmrow input.name{flex:2 1 160px}
+.tmrow input.sub{flex:3 1 200px;font-weight:600}
+.iconbtn{
+  border:0;border-radius:11px;background:#fff;color:var(--ink);
+  width:40px;height:40px;font:inherit;font-size:17px;font-weight:800;cursor:pointer;flex:none;
+}
+.iconbtn:disabled{opacity:.3;cursor:not-allowed}
+.tmrow .toggle{
+  border:0;border-radius:11px;padding:0 14px;height:40px;font:inherit;font-size:14px;font-weight:800;
+  cursor:pointer;background:var(--ink);color:var(--lime);flex:none;
+}
+.tmrow.off .toggle{background:var(--lime);color:var(--ink)}
+.addrow{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.addrow input{
+  border:3px solid var(--paper-2);border-radius:14px;background:#fff;padding:12px 14px;
+  font:inherit;font-size:16px;font-weight:700;color:var(--ink);outline:none;flex:1 1 160px;min-width:0;
+}
+.addrow input:focus{border-color:var(--lilac)}
+.addrow button{
+  border:0;border-radius:14px;background:var(--ink);color:var(--lime);
+  padding:12px 22px;font:inherit;font-size:16px;font-weight:800;cursor:pointer;flex:none;
+}
+.addrow button:disabled{background:var(--paper-2);color:var(--muted);cursor:not-allowed}
+
+/* PIN gate */
+.gate{
+  min-height:70vh;display:grid;place-items:center;
+}
+.gate form{
+  background:var(--paper);color:var(--ink);border-radius:34px;padding:38px;
+  width:min(420px,100%);text-align:center;
+}
+.gate h2{margin:0 0 6px;font-size:32px;font-weight:800;letter-spacing:-.5px}
+.gate p{margin:0 0 24px;font-size:16px;font-weight:600;color:var(--muted)}
+.gate input{
+  width:100%;border:3px solid var(--paper-2);border-radius:18px;background:#fff;
+  padding:16px;font:inherit;font-size:32px;font-weight:800;text-align:center;
+  letter-spacing:10px;color:var(--ink);outline:none;
+}
+.gate input:focus{border-color:var(--lilac)}
+.gate .err{color:var(--coral);font-weight:800;font-size:15px;margin-top:14px;min-height:20px}
+
+.note{font-size:14px;font-weight:600;color:var(--muted);text-align:center;margin-top:8px}

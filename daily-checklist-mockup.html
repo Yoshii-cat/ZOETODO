@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Today</title>
+<style>
+  :root{
+    --ink:#1b1f3a;
+    --paper:#f7f3ea;
+    --paper-2:#efe9dc;
+    --lilac:#c9b8ff;
+    --lime:#d6f25a;
+    --coral:#ff7a59;
+    --muted:#7c7f94;
+    --radius:26px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;margin:0}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:ui-rounded,"SF Pro Rounded","Nunito","Avenir Next Rounded",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding:max(28px,env(safe-area-inset-top)) 40px 40px;
+    user-select:none;
+  }
+  header{
+    display:flex;align-items:flex-end;justify-content:space-between;
+    margin-bottom:34px;
+  }
+  .date{font-size:20px;color:var(--lilac);font-weight:600;letter-spacing:.2px}
+  h1{
+    margin:6px 0 0;font-size:64px;line-height:1;font-weight:800;letter-spacing:-1.5px;
+  }
+  h1 span{color:var(--lime)}
+  .ring{
+    width:112px;height:112px;position:relative;
+  }
+  .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .ring circle{fill:none;stroke-width:10;stroke-linecap:round}
+  .ring .track{stroke:rgba(255,255,255,.12)}
+  .ring .fill{stroke:var(--lime);transition:stroke-dashoffset .5s cubic-bezier(.2,.8,.2,1)}
+  .ring .num{
+    position:absolute;inset:0;display:grid;place-items:center;
+    font-size:30px;font-weight:800;
+  }
+  .ring .num small{font-size:13px;color:var(--muted);font-weight:600;margin-top:-6px}
+
+  .grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:18px;
+  }
+  @media (max-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
+  @media (max-width:600px){.grid{grid-template-columns:repeat(2,1fr)} body{padding:24px 20px} h1{font-size:44px}}
+
+  .tile{
+    position:relative;
+    aspect-ratio:1/1;
+    border-radius:var(--radius);
+    background:var(--paper);
+    color:var(--ink);
+    padding:22px;
+    display:flex;flex-direction:column;justify-content:space-between;
+    cursor:pointer;
+    transition:transform .12s ease, background .25s ease, color .25s ease;
+    border:0;text-align:left;font:inherit;
+  }
+  .tile:active{transform:scale(.96)}
+  .tile .name{font-size:24px;font-weight:800;line-height:1.1;letter-spacing:-.3px}
+  .tile .sub{font-size:14px;font-weight:600;color:var(--muted)}
+  .tile .mark{
+    width:44px;height:44px;border-radius:50%;
+    border:3px solid var(--ink);opacity:.35;
+    display:grid;place-items:center;
+    transition:all .25s ease;
+  }
+  .tile .mark svg{width:24px;height:24px;stroke:var(--ink);stroke-width:3.5;fill:none;stroke-linecap:round;stroke-linejoin:round;
+    stroke-dasharray:30;stroke-dashoffset:30;transition:stroke-dashoffset .3s .1s ease}
+  .tile.done{background:var(--lime)}
+  .tile.done .mark{background:var(--ink);opacity:1}
+  .tile.done .mark svg{stroke:var(--lime);stroke-dashoffset:0}
+  .tile.done .sub{color:var(--ink);opacity:.7}
+  .tile.skipped{background:var(--paper-2);color:var(--muted)}
+  .tile.skipped .name{text-decoration:line-through;text-decoration-thickness:3px;text-decoration-color:var(--coral)}
+  .tile.skipped .mark{border-style:dashed;opacity:.5}
+  .tile.skipped .sub{color:var(--coral)}
+  .skip{
+    position:absolute;top:16px;right:18px;
+    font-size:13px;font-weight:700;color:var(--muted);
+    background:transparent;border:0;padding:6px 8px;border-radius:10px;font:inherit;font-size:13px;font-weight:700;
+    cursor:pointer;
+  }
+  .skip:active{background:rgba(0,0,0,.06)}
+  .tile.done .skip, .tile.skipped .skip{display:none}
+
+  footer{margin-top:30px;font-size:14px;color:var(--muted);font-weight:600;display:flex;justify-content:space-between}
+
+  /* sheets */
+  .veil{
+    position:fixed;inset:0;background:rgba(27,31,58,.72);backdrop-filter:blur(10px);
+    display:none;align-items:center;justify-content:center;padding:24px;z-index:9;
+  }
+  .veil.open{display:flex}
+  .sheet{
+    width:min(560px,100%);background:var(--paper);color:var(--ink);
+    border-radius:34px;padding:36px 36px 30px;
+    animation:pop .28s cubic-bezier(.2,.9,.2,1.2);
+  }
+  @keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+  .sheet h2{margin:0 0 6px;font-size:34px;font-weight:800;letter-spacing:-.6px}
+  .sheet p{margin:0 0 26px;font-size:18px;color:var(--muted);font-weight:600}
+  .rec{
+    display:flex;flex-direction:column;align-items:center;gap:14px;margin:8px 0 26px;
+  }
+  .recbtn{
+    width:132px;height:132px;border-radius:50%;border:0;
+    background:var(--coral);color:#fff;font:inherit;font-weight:800;font-size:17px;
+    display:grid;place-items:center;cursor:pointer;
+    box-shadow:0 0 0 0 rgba(255,122,89,.5);
+    transition:transform .12s;
+  }
+  .recbtn:active{transform:scale(.95)}
+  .recbtn.live{animation:pulse 1.2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,122,89,.55)}100%{box-shadow:0 0 0 26px rgba(255,122,89,0)}}
+  .recbtn .dot{width:26px;height:26px;background:#fff;border-radius:50%;margin-bottom:8px}
+  .recbtn.live .dot{border-radius:6px}
+  .timer{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}
+  .bar{height:6px;background:var(--paper-2);border-radius:99px;overflow:hidden;width:100%}
+  .bar i{display:block;height:100%;width:0;background:var(--coral);transition:width .2s linear}
+  textarea{
+    width:100%;min-height:110px;border-radius:18px;border:3px solid var(--paper-2);
+    background:#fff;padding:16px;font:inherit;font-size:20px;font-weight:600;color:var(--ink);
+    resize:none;outline:none;
+  }
+  textarea:focus{border-color:var(--lilac)}
+  .row{display:flex;gap:12px;margin-top:18px}
+  .btn{
+    flex:1;border:0;border-radius:18px;padding:18px;font:inherit;font-size:19px;font-weight:800;cursor:pointer;
+  }
+  .btn.primary{background:var(--ink);color:var(--lime)}
+  .btn.primary:disabled{background:var(--paper-2);color:var(--muted);cursor:not-allowed}
+  .btn.ghost{background:transparent;color:var(--muted)}
+  .toast{
+    position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);
+    background:var(--lime);color:var(--ink);padding:14px 22px;border-radius:99px;
+    font-weight:800;font-size:17px;opacity:0;transition:all .3s;pointer-events:none;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="date" id="date"></div>
+    <h1>Hey <span>Zoe</span>, here's today.</h1>
+  </div>
+  <div class="ring">
+    <svg viewBox="0 0 120 120">
+      <circle class="track" cx="60" cy="60" r="52"></circle>
+      <circle class="fill" id="ringFill" cx="60" cy="60" r="52"></circle>
+    </svg>
+    <div class="num"><span id="doneCount">0</span><small id="ofCount"></small></div>
+  </div>
+</header>
+
+<div class="grid" id="grid"></div>
+
+<footer>
+  <span>List clears at midnight. Everything you finish stays saved.</span>
+  <span id="clock"></span>
+</footer>
+
+<!-- Voice note sheet -->
+<div class="veil" id="voiceVeil">
+  <div class="sheet">
+    <h2 id="voiceTitle">Nice, homework done.</h2>
+    <p>Say what you did. It counts once your recap is saved.</p>
+    <textarea id="recap" placeholder="Tap here, then hit the mic key and talk"></textarea>
+    <div class="row">
+      <button class="btn primary" id="voiceSave" disabled>Save recap</button>
+    </div>
+  </div>
+</div>
+
+<!-- Skip sheet -->
+<div class="veil" id="skipVeil">
+  <div class="sheet">
+    <h2 id="skipTitle">Skipping DJ practice today?</h2>
+    <p>That's fine, but you need to say why.</p>
+    <textarea id="reason" placeholder="Because..."></textarea>
+    <div class="row">
+      <button class="btn ghost" id="skipCancel">Never mind</button>
+      <button class="btn primary" id="skipConfirm" disabled>Skip it</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Saved</div>
+
+<script>
+const tasks = [
+  {id:'homework', name:'Homework', sub:'Every school day'},
+  {id:'study', name:'Studying', sub:'30 minutes'},
+  {id:'workout', name:'Workout', sub:'Move for 20 min'},
+  {id:'biofeedback', name:'Biofeedback', sub:'One session'},
+  {id:'blog', name:'Blog', sub:'Write or edit'},
+  {id:'dj', name:'DJ practice', sub:'One mix'},
+  {id:'batmitzvah', name:'Bat mitzvah practice', sub:'Torah portion'},
+  {id:'me', name:'ME', sub:''},
+  {id:'ne', name:'NE', sub:''},
+];
+
+const state = {}; // id -> {status:'done'|'skipped', at, reason}
+const grid = document.getElementById('grid');
+const MAX = 20;
+
+function timeNow(){ return new Date().toLocaleTimeString([], {hour:'numeric', minute:'2-digit'}); }
+
+function render(){
+  grid.innerHTML = '';
+  tasks.forEach(t => {
+    const s = state[t.id];
+    const el = document.createElement('button');
+    el.className = 'tile' + (s ? ' ' + s.status : '');
+    let sub = t.sub;
+    if (s?.status==='done') sub = 'Done at ' + s.at;
+    if (s?.status==='skipped') sub = 'Skipped: ' + s.reason;
+    el.innerHTML = `
+      <div class="mark"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>
+      <div><div class="name">${t.name}</div><div class="sub">${sub}</div></div>
+      <span class="skip" data-skip="${t.id}">skip</span>`;
+    el.addEventListener('click', e => {
+      if (e.target.dataset.skip) { openSkip(t); return; }
+      if (s) { delete state[t.id]; render(); return; } // tap again to undo
+      openVoice(t);
+    });
+    grid.appendChild(el);
+  });
+  const done = Object.values(state).filter(s=>s.status==='done').length;
+  document.getElementById('doneCount').textContent = done;
+  document.getElementById('ofCount').textContent = 'of ' + tasks.length;
+  const c = 2*Math.PI*52;
+  const ring = document.getElementById('ringFill');
+  ring.style.strokeDasharray = c;
+  ring.style.strokeDashoffset = c*(1-done/tasks.length);
+}
+
+// recap sheet (dictation via the iPad keyboard mic key)
+const voiceVeil = document.getElementById('voiceVeil');
+const recap = document.getElementById('recap');
+const voiceSave = document.getElementById('voiceSave');
+let current=null;
+function openVoice(t){
+  current=t; recap.value=''; voiceSave.disabled=true;
+  document.getElementById('voiceTitle').textContent = 'Nice, ' + t.name.toLowerCase() + ' done.';
+  voiceVeil.classList.add('open'); setTimeout(()=>recap.focus(),50);
+}
+recap.addEventListener('input', ()=>{ voiceSave.disabled = recap.value.trim().length < 3; });
+voiceSave.addEventListener('click', ()=>{
+  state[current.id]={status:'done', at:timeNow(), recap:recap.value.trim()};
+  voiceVeil.classList.remove('open'); render(); toast('Saved');
+});
+
+// skip sheet
+const skipVeil = document.getElementById('skipVeil');
+const reason = document.getElementById('reason');
+const skipConfirm = document.getElementById('skipConfirm');
+let skipping=null;
+function openSkip(t){
+  skipping=t; reason.value=''; skipConfirm.disabled=true;
+  document.getElementById('skipTitle').textContent = 'Skipping ' + t.name.toLowerCase() + ' today?';
+  skipVeil.classList.add('open'); setTimeout(()=>reason.focus(),50);
+}
+reason.addEventListener('input', ()=>{ skipConfirm.disabled = reason.value.trim().length < 3; });
+skipConfirm.addEventListener('click', ()=>{
+  state[skipping.id] = {status:'skipped', reason:reason.value.trim()};
+  skipVeil.classList.remove('open'); render();
+});
+document.getElementById('skipCancel').addEventListener('click', ()=>skipVeil.classList.remove('open'));
+
+function toast(msg){
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),1600);
+}
+
+// header
+document.getElementById('date').textContent = new Date().toLocaleDateString([], {weekday:'long', month:'long', day:'numeric'});
+setInterval(()=>document.getElementById('clock').textContent = timeNow(),1000);
+render();
+</script>
+</body>
+</html>
