@@ -84,10 +84,14 @@ keeps all of its history attached.
 
 ## How the 8pm digest works
 
-Vercel Cron schedules in UTC, and 8pm in New York is a different UTC hour in summer than in
-winter. Rather than editing the schedule twice a year, [`vercel.json`](vercel.json) runs
-`/api/digest` **every hour**, and the handler returns immediately unless it is currently the
-8pm hour in New York. Nothing to adjust for daylight saving.
+Vercel Cron schedules in UTC, and 8pm in New York is 00:00 UTC in summer but 01:00 UTC in
+winter. The Vercel **Hobby plan only allows cron jobs that run once a day**, so
+[`vercel.json`](vercel.json) schedules `/api/digest` twice — once at each of those hours — and
+the handler returns immediately unless it is actually the 8pm hour in New York. One run sends,
+the other skips. Nothing to adjust for daylight saving, and nothing to upgrade.
+
+Hobby cron jobs can fire anywhere within their scheduled hour rather than exactly on the
+minute, so the email may land between 8:00 and 8:59pm.
 
 The route is protected by `CRON_SECRET`, which Vercel sends as `Authorization: Bearer <secret>`.
 Requests without it get a 401.

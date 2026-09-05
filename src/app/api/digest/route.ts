@@ -50,8 +50,10 @@ export async function GET(req: Request) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // The cron fires hourly because Vercel schedules in UTC and 8pm New York
-  // moves with daylight saving. Every run but the 8pm one exits here.
+  // Vercel schedules in UTC, and 8pm New York is 00:00 UTC in summer but
+  // 01:00 UTC in winter. The Hobby plan only allows daily crons, so
+  // vercel.json fires once at each of those hours and every run that is not
+  // actually the 8pm hour in New York exits here.
   const hour = nyHour();
   const force = url.searchParams.get("force") === "1";
   if (hour !== SEND_HOUR && !force) {
