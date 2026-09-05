@@ -114,9 +114,6 @@ export default async function ParentsPage() {
           </h1>
         </div>
         <div className="p-actions">
-          <a className="linkbtn" href="/api/digest?preview=1">
-            Preview tonight&apos;s email
-          </a>
           <a className="linkbtn" href="/">
             Her screen
           </a>

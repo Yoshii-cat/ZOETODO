@@ -16,19 +16,6 @@ export function nyDay(at: Date = new Date()): string {
   }).format(at);
 }
 
-/** Hour 0-23 in New York for the given instant. */
-export function nyHour(at: Date = new Date()): number {
-  // hourCycle h23 matters: plain hour12:false reports midnight as "24" on some
-  // ICU builds, which would make the 8pm digest check silently wrong.
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: TZ,
-    hour: "2-digit",
-    hourCycle: "h23",
-  }).formatToParts(at);
-  const hour = parts.find((p) => p.type === "hour")?.value ?? "0";
-  return Number(hour);
-}
-
 /** "3:04 PM" in New York. */
 export function nyTime(at: Date | string): string {
   const d = typeof at === "string" ? new Date(at) : at;
