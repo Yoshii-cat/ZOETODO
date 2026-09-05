@@ -72,7 +72,7 @@ Go to **`/parents`**, enter the PIN, and use the **Tasks** section at the bottom
 - **Rename** a task or change its subtitle — click the field, type, click away. It saves on blur.
 - **Reorder** with the ↑ / ↓ buttons. The order there is the order of the tiles on the iPad.
 - **Add** a task with the row at the bottom.
-- **Turn a task off**, which hides it from her screen and from the digest but keeps every past
+- **Turn a task off**, which hides it from her screen but keeps every past
   entry intact. Turn it back on any time.
 
 Task ids are generated from the name and never change, so renaming "Studying" to "Study time"
